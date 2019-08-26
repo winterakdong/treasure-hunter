@@ -26,7 +26,7 @@ To satisfy the interfaces you will need to ensure that your classes implement al
 ### Step 2 - Control the Game Loop
 After building the game in the setup, you will need to continually take in user input. Make sure your game loop takes in the user input, handles it updating the game state (changing a room, taking an item, etc.) then takes in a new user command.
 
-Because of how the interfaces are setup, you should be able to follow the pattern that has been laid out to build this functionality over several methods in the `Game` class. 
+Because of how the interfaces are setup, you should be able to follow the pattern that has been laid out to build this functionality over several methods in the `App` class. 
   
 ## Requirements
 <hr>
@@ -56,5 +56,5 @@ Because of how the interfaces are setup, you should be able to follow the patter
 - The user should know when its their turn try formatting the users input with something like this everytime its the users turn to type
   - What do you do: __________________ // <- Their Answer on the same line
 - Add some riddles or puzzles for users to solve to get from room to room
-- Lock some doors that users need keys to get through.
+- Lock some doors that users need keys to get through, or incorporate useable objects in some other manner.
 
