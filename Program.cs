@@ -2,11 +2,16 @@
 
 namespace TreasureHunter
 {
-    class Program
+  class Program
+  {
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+      Console.BackgroundColor = ConsoleColor.DarkBlue;
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.Clear();
+      App app = new App();
+      app.Setup();
+      app.Run();
     }
+  }
 }
