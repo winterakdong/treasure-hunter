@@ -8,7 +8,7 @@ namespace TreasureHunter.Interfaces
 
     void Greeting();
 
-    void Setup(); ///initialize all of your data for the application
+    void Setup(); //initialize all of your data for the application
 
     void Run(); //control flow loop for the application while Playing
 
