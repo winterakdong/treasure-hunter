@@ -6,12 +6,16 @@ namespace TreasureHunter
   {
     static void Main(string[] args)
     {
-      Console.BackgroundColor = ConsoleColor.DarkBlue;
-      Console.ForegroundColor = ConsoleColor.Yellow;
-      Console.Clear();
-      App app = new App();
-      app.Setup();
-      app.Run();
+      App app;
+      do
+      {
+        Console.BackgroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Clear();
+        app = new App();
+        app.Setup();
+        app.Run();
+      } while (app.Playing == false);
     }
   }
 }

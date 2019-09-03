@@ -15,7 +15,6 @@ namespace TreasureHunter
     private List<Item> ShoppingList = new List<Item>();
 
     int Parameter;
-    int Penalty = 0;
     bool ShoppingCart;
 
     // Level one
@@ -59,7 +58,7 @@ namespace TreasureHunter
 
     public void Greeting()
     {
-      Console.Write("Welcome to IKEA Simulator! Let's get some shopping done for your new simulated Apartment!" +
+      Console.Write("Welcome to IKEA Simulator! The game for tormented souls and stay-at-home-moms! Let's get some shopping done for your new simulated Apartment!" +
       "\nWhat is your name?: ");
       String name = Console.ReadLine();
       Item item = new Item("a", "b");
@@ -83,8 +82,12 @@ namespace TreasureHunter
       Console.WriteLine("\n\nGot It? Press the any key to continue.");
       Console.ReadKey();
       Console.Clear();
-      Console.WriteLine("Oh no... you misplaced your shopping list. Thankfully, you don't need it. Right?");
+      Console.WriteLine("Oh no... you conveniently misplaced your shopping list. Thankfully, you don't need it. Right?");
       Console.WriteLine("\n\nPress the any key to continue.");
+      Console.ReadKey();
+      Console.Clear();
+      Console.WriteLine("You might be tempted to buy other things along your journey. Remember that the objective is to only buy what you need. Lastly, don't let your patience run out or else you will not be able to complete your journey.");
+      Console.WriteLine("\n\nPress the any key to begin your journey.");
       Console.ReadKey();
       Console.Clear();
     }
@@ -205,10 +208,10 @@ namespace TreasureHunter
         allItems.Add(item);
       }
 
-      Item swedishMeatballs = new Item("Swedish Meatballs", "20");
-      Item salmonMeatballs = new Item("Salmon Meatballs", "25");
-      Item salad = new Item("Blackberry Summer Salad", "15");
-      Item cake = new Item("Chockolate Conspiracy Cake", "10");
+      Item swedishMeatballs = new Item("Swedish Meatballs", "Nourishment");
+      Item salmonMeatballs = new Item("Salmon Meatballs", "Nourishment");
+      Item salad = new Item("Blackberry Summer Salad", "Nourishment");
+      Item cake = new Item("Chockolate Conspiracy Cake", "Nourishment");
       nine.Items.Add(swedishMeatballs);
       nine.Items.Add(salmonMeatballs);
       nine.Items.Add(salad);
@@ -341,12 +344,24 @@ namespace TreasureHunter
 
     public void Run()
     {
+      Playing = true;
       Greeting();
-      DisplayMenu();
+
+      do
+      {
+        DisplayMenu();
+      } while (Playing);
     } //control flow loop for the application while Playing
 
     public void DisplayMenu()
     {
+      if (player.HealthPoints < 0)
+      {
+        Console.WriteLine("Oh no! You lost all of your patience and have a mental breakdown in the store. You are no longer mentally or emotionally fit to continue your shopping journey.\n\nPress the any key to exit.");
+        Console.ReadKey();
+        Environment.Exit(0);
+      }
+
       Console.WriteLine($"You are in {Location.Name}. From here, you can go to:");
       int i = 1;
       foreach (KeyValuePair<String, IBoundary> item in Location.NeighborBoundaries)
@@ -379,7 +394,6 @@ namespace TreasureHunter
           Console.WriteLine("Please enter valid parameter. Type <help> to print a list of commands and options.\n\nPress the any key to continue.");
           Console.ReadKey();
           Console.Clear();
-          DisplayMenu();
           return;
         }
       }
@@ -388,34 +402,31 @@ namespace TreasureHunter
       {
         case "go":
           ChangeLocation();
-          DisplayMenu();
-          Penalty = 10;
+          player.HealthPoints -= 2;
           break;
         case "take":
           TakeItem();
-          DisplayMenu();
+          player.HealthPoints -= 1;
           break;
         case "drop":
           DropItem();
-          DisplayMenu();
-          Penalty = 20;
+          player.HealthPoints -= 3;
           break;
         case "look":
           DisplayRoomDescription();
-          DisplayMenu();
-          Penalty = 5;
+          player.HealthPoints -= 1;
           break;
         case "inventory":
           DisplayPlayerInventory();
-          DisplayMenu();
           break;
         case "usecomputer":
           FindItem();
-          DisplayMenu();
+          break;
+        case "stresslevel":
+          DisplayHealth();
           break;
         case "help":
           DisplayHelpInfo();
-          DisplayMenu();
           break;
         case "quit":
           Playing = false;
@@ -424,7 +435,6 @@ namespace TreasureHunter
         default:
           Console.WriteLine("Please enter valid command. Type <help> to print a list of commands and options.");
           Console.Clear();
-          DisplayMenu();
           break;
       }
     } //NOTE String.Split(<char>), string command and option, and your switch statement
@@ -432,6 +442,14 @@ namespace TreasureHunter
     {
       Console.Clear();
       int i = 1;
+
+      if (Location == eighteen)
+      {
+        Console.WriteLine(Location.Description + "\n\nPress the any key to continue.");
+        Console.ReadKey();
+        Console.Clear();
+        return;
+      }
 
       Console.WriteLine(Location.Description + "\n\nPress the any key to continue.");
       Console.ReadKey();
@@ -452,7 +470,7 @@ namespace TreasureHunter
 
       Random random = new Random();
       int randomNumber = random.Next(100);
-      if (randomNumber <= 20)
+      if (randomNumber <= 35)
       {
         ActivateShortcut();
         Console.WriteLine("\n\nPress the any key to go back to the menu.");
@@ -479,17 +497,41 @@ namespace TreasureHunter
           if (Location == end)
           {
             FinishGame();
+            return;
           }
           Console.Clear();
-          return;
         }
 
         i++;
       }
-      Console.WriteLine("Please enter valid parameter. Type < help > to print a list of commands and options.\n\nPress the any key to continue.");
-      Console.ReadKey();
-      Console.Clear();
 
+      Random random = new Random();
+      int randomInt = random.Next(1, 35);
+
+      switch (randomInt)
+      {
+        case 1:
+          Console.WriteLine("As you are walking to the next area, a horde of slow walkers block your path. Your stress level goes up by 5 points.");
+          player.HealthPoints -= 5;
+          Console.WriteLine("\n\nPress the any key to continue.");
+          Console.ReadKey();
+          break;
+        case 2:
+          Console.WriteLine("You spot two kids screaming at the top of their lungs. One of the kids chucks a meatball at your face. Your stress level goes up by 20 points.");
+          player.HealthPoints -= 20;
+          Console.WriteLine("\n\nPress the any key to continue.");
+          Console.ReadKey();
+          break;
+        case 3:
+          Console.WriteLine("You can't help but stare at a couple arguing about the color of the curtains that they are about to buy. The husband glares at you and you both make awkward eye contact for a solid 20 seconds. Your stress level goes up by 15 points.");
+          player.HealthPoints -= 15;
+          Console.WriteLine("\n\nPress the any key to continue.");
+          Console.ReadKey();
+          break;
+        default:
+          break;
+      }
+      Console.Clear();
     } //NOTE the logic to run when the user enters 'go <locationName>' or 'enter <locationName>' (whatever you decide you command word is)
 
     public void TakeItem()
@@ -499,6 +541,16 @@ namespace TreasureHunter
       if (Parameter < 1 || Parameter > Location.Items.Count)
       {
         Console.WriteLine("Please enter valid parameter. Type < help > to print a list of commands and options.");
+      }
+      else if (Location.Items[Parameter - 1].Description.Equals("Nourishment"))
+      {
+        Item foodItem = (Item)Location.Items[Parameter - 1];
+        Random random = new Random();
+        int healthPointsGained = random.Next(15, 45);
+
+        player.HealthPoints += healthPointsGained;
+        Location.Items.Remove(foodItem);
+        System.Console.WriteLine($"You're stress level goes down by {healthPointsGained} points!");
       }
       else if (Location == eighteen)
       {
@@ -538,7 +590,7 @@ namespace TreasureHunter
     {
       if (Parameter < 1 || Parameter > player.Inventory.Count)
       {
-        Console.WriteLine("Please enter valid parameter.Type < help > to print a list of commands and options.");
+        Console.WriteLine("Please enter valid parameter. Type < help > to print a list of commands and options.");
       }
       else
       {
@@ -624,7 +676,6 @@ namespace TreasureHunter
         case "n":
           Parameter = 1;
           ChangeLocation();
-          DisplayMenu();
           break;
         default:
           FinishGame();
@@ -634,11 +685,11 @@ namespace TreasureHunter
 
     public void DisplayGameResults()
     {
+      Console.Clear();
       int points = 0;
       player.Inventory.Remove(gymkhana);
       Console.WriteLine("Here is what you purchased from your shopping list:");
       Thread.Sleep(2000);
-      int i = 1;
       if (player.Inventory.Count == 0)
       {
         Console.WriteLine("There is nothing in your inventory.");
@@ -649,54 +700,72 @@ namespace TreasureHunter
         {
           if (ShoppingList.Contains((Item)item))
           {
-            Console.WriteLine($"{i}>\t{item.Name}\n\t  {item.Description}");
+            Console.WriteLine($">\t{item.Name}\n\t  {item.Description}");
             points += 100;
           }
           Thread.Sleep(1000);
-          i++;
         }
       }
 
-      Console.WriteLine("Here is what you are missing from your shopping list:");
+      Console.WriteLine("\n\nHere is what you are missing from your shopping list:");
       Thread.Sleep(2000);
-      i = 1;
       foreach (IItem item in ShoppingList)
       {
-        if (player.Inventory.Contains(item))
+        if (!player.Inventory.Contains(item))
         {
-          Console.WriteLine($"{i}>\t{item.Name}\n\t  {item.Description}");
+          Console.WriteLine($">\t{item.Name}\n\t  {item.Description}");
           points -= 30;
         }
         Thread.Sleep(1000);
-        i++;
       }
 
-      Console.WriteLine("Here is what you didn't need:");
+      Console.WriteLine("\n\nHere is what you didn't need:");
       Thread.Sleep(2000);
-      i = 1;
       foreach (IItem item in player.Inventory)
       {
         if (ShoppingList.Contains((Item)item) == false)
         {
-          Console.WriteLine($"{i}>\t{item.Name}\n\t  {item.Description}");
+          Console.WriteLine($">\t{item.Name}\n\t  {item.Description}");
           points -= 10;
         }
         Thread.Sleep(1000);
-        i++;
       }
 
-      points = points - Penalty;
+      points = points + (player.HealthPoints * 2);
+      if (points < 0)
+      {
+        points = 0;
+      }
+
       Console.Write("\n\nYou're total points for this game are: ");
       Console.ForegroundColor = ConsoleColor.Green;
       Console.Write(points);
-
       Console.ForegroundColor = ConsoleColor.Yellow;
-
-      Console.WriteLine("Press the any key to quit.");
+      Console.WriteLine("\n\nPress the any key to continue.");
       Console.ReadKey();
       Console.Clear();
-      Playing = false;
-      Environment.Exit(0);
+
+      bool playerResponds = false;
+      do
+      {
+        Console.WriteLine("Would you like to play another game? Press < Y > for yes and < N > for no. ");
+        String userInput = Console.ReadLine().ToLower();
+        switch (userInput)
+        {
+          case "y":
+            Playing = false;
+            playerResponds = true;
+            break;
+          case "n":
+            Playing = false;
+            playerResponds = true;
+            Environment.Exit(0);
+            break;
+          default:
+            Console.WriteLine("Please enter a valid option!");
+            break;
+        }
+      } while (playerResponds == false);
     }
 
     public void DisplayHelpInfo()
@@ -707,15 +776,25 @@ namespace TreasureHunter
         "\nThe objective of the game is to pick up as many items from your shopping list by exploring the entire store." +
         "\n\n\tGo < Option >\n\t  Moves the player from room to room" +
         "\n\tTake < Option >\n\t  Places an item into the player inventory" +
+        "\n\tDrop < Option >\n\t  Drops an item into the player inventory" +
         "\n\tLook\n\t  Prints the description of the room again" +
         "\n\tInventory\n\t  Prints the players inventory" +
+        "\n\tStressLevel\n\t  Checks your stress level" +
         "\n\tQuit\n\t  Quits the Game" +
         "\nTo finish the game, go to Checkout and see how you did!" +
 
-        "\n\n\nPress the any key to go back to the menu.");
+        "\n\nPress the any key to go back to the menu.");
       Console.ReadKey();
       Console.Clear();
     } //NOTE the logic to run when the user enters 'help'
+
+    public void DisplayHealth()
+    {
+      Console.Clear();
+      Console.WriteLine($"You have {player.HealthPoints} points left in your stress bank.\nConsider replenishing yourself with Meatballs or other foods at the Restuarant & Café along the way.\n\nPress the any key to go back to the menu.");
+      Console.ReadKey();
+      Console.Clear();
+    }
 
     public void ActivateShortcut()
     {
@@ -795,10 +874,7 @@ namespace TreasureHunter
       {
         System.Console.WriteLine("You've discovered all of the shortcuts in this area.");
       }
-
-
     }
-
     //NOTE [STRETCH GOALS] - Basic requirements first and then extend your application.
     //void UseItem(); //NOTE [STRETCH GOAL] - to use an item you must check that your player has the target item in their Inventory and then if so modify the value of a property on the Location. You may keep or remove the item from the player's inventory according to what makes the most sense with your story.
   }
