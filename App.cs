@@ -322,6 +322,8 @@ namespace TreasureHunter
       int itemIndex;
       for (int i = 0; i < 10; i++)
       {
+        //NOTE this is an incorrect use a do while loop because if it's ever true then unfortunately an infinite loop is created,
+        //if you're excluding duplicates then use the same .Contains() method with an if/else statement instead of a do/while
         do
         {
           itemIndex = random.Next(allItems.Count);
@@ -355,11 +357,11 @@ namespace TreasureHunter
 
     public void DisplayMenu()
     {
-      if (player.HealthPoints < 0)
+      if (player.HealthPoints < 0) //FIXME 0 should be death too (inclusive 0 not exclusive)
       {
         Console.WriteLine("Oh no! You lost all of your patience and have a mental breakdown in the store. You are no longer mentally or emotionally fit to continue your shopping journey.\n\nPress the any key to exit.");
         Console.ReadKey();
-        Environment.Exit(0);
+        Environment.Exit(0); //NOTE using this method exits the application much like ctrl+c does from the command prompt. that means that no further logic will be executed or write lines (such as "thank you for playing!") displayed
       }
 
       Console.WriteLine($"You are in {Location.Name}. From here, you can go to:");
@@ -385,7 +387,7 @@ namespace TreasureHunter
       if (readInput.Length > 1)
       {
         strParameter = readInput[1];
-        try
+        try //REVIEW impressive work with the try/catch block
         {
           Parameter = int.Parse(strParameter);
         }
